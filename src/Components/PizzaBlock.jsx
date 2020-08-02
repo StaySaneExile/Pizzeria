@@ -1,12 +1,13 @@
 import React, {useState} from "react";
 import classNames from 'classnames';
+import Button from "./Button";
 
-const PizzaBlock = (props) => {
+const PizzaBlock = ({id, name, imageUrl, price, types, sizes, cartItems, clickAddPizzaToCart}) => {
 
     const typePizza = ['тонкое', 'традиционное']
     const typeSizes = [26, 30, 40]
-    const [activeType, setActiveType] = React.useState(props.types[0])
-    const [activeSize, setActiveSize] = React.useState(props.sizes[0])
+    const [activeType, setActiveType] = React.useState(types[0])
+    const [activeSize, setActiveSize] = React.useState(0)
 
     const clickSelectType = (index) => {
         setActiveType(index)
@@ -14,14 +15,27 @@ const PizzaBlock = (props) => {
     const clickSelectSize = (index) => {
         setActiveSize(index)
     }
+    const clickAddPizza = () => {
+        debugger
+        let obj = {
+            id,
+            name,
+            imageUrl,
+            price,
+            size: typeSizes[activeSize],
+            type: typePizza[activeType]
+        }
+        clickAddPizzaToCart(obj)
+    }
+
 
     return (
         <div className="pizza-block">
             <img
                 className="pizza-block__image"
-                src={props.imageUrl} alt="Pizza"
+                src={imageUrl} alt="Pizza"
             />
-            <h4 className="pizza-block__title">{props.name}</h4>
+            <h4 className="pizza-block__title">{name}</h4>
             <div className="pizza-block__selector">
                 <ul>
                     {
@@ -29,7 +43,7 @@ const PizzaBlock = (props) => {
                             <li key={index}
                                 className={classNames({
                                     active: activeType == index,
-                                    disabled: !props.types.includes(index)
+                                    disabled: !types.includes(index)
                                 })}
                                 onClick={() => clickSelectType(index)}
                             >{t}</li>)
@@ -41,7 +55,7 @@ const PizzaBlock = (props) => {
                             <li key={index}
                                 className={classNames({
                                     active: activeSize == index,
-                                    disabled: !props.sizes.includes(t)
+                                    disabled: !sizes.includes(t)
                                 })}
                                 onClick={() => clickSelectSize(index)}
                             >{t} cm</li>)
@@ -49,8 +63,8 @@ const PizzaBlock = (props) => {
                 </ul>
             </div>
             <div className="pizza-block__bottom">
-                <div className="pizza-block__price">от {props.price} P</div>
-                <div className="button button--outline button--add">
+                <div className="pizza-block__price">от {price} P</div>
+                <Button onClick={clickAddPizza} >
                     <svg
                         width="12"
                         height="12"
@@ -64,8 +78,8 @@ const PizzaBlock = (props) => {
                         />
                     </svg>
                     <span>Добавить</span>
-                    <i>2</i>
-                </div>
+                    {cartItems && <i>{cartItems}</i>}
+                </Button>
             </div>
         </div>
     )

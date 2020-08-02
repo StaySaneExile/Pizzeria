@@ -13,6 +13,11 @@ export const pizzasReducer = (state = initialState, action) => {
                 ...state,
                 items: action.items
             }
+        case 'SET_PRELOADER':
+            return {
+                ...state,
+                isLoading: action.value
+            }
 
         default:
             return state
@@ -21,12 +26,15 @@ export const pizzasReducer = (state = initialState, action) => {
 
 //actionCreators
 export const setPizzas = (items) => ({type: 'SET_PIZZAS', items})
+export const setPreloader = (value) => ({type: 'SET_PRELOADER', value})
 
 //thunk
-export const getPizzas = () => async (dispatch) => {
+export const getPizzas = (sortBy, category) => async (dispatch) => {
     try {
-        let result = await apiPizzas.getListPizzas();
+        dispatch(setPreloader(true))
+        let result = await apiPizzas.getListPizzas(sortBy, category);
         dispatch(setPizzas(result))
+        dispatch(setPreloader(false))
     } catch (e) {
         console.log(e)
     }
